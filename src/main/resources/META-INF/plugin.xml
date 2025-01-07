@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<idea-plugin>
+    <id>org.logicboost.chat</id>
+    <name>LogicBoost AI Assistant</name>
+    <vendor>LogicBoost</vendor>
+    <description>Transform your coding experience with LogicBoost AI Assistant - your intelligent coding companion for
+        JetBrains IDEs.
+
+        Harness the power of modern AI to enhance your development workflow with features like smart code analysis,
+        intelligent debugging assistance, and context-aware suggestions. Supporting multiple LLM backends, LogicBoost
+        seamlessly integrates with your existing development process.
+
+        Key Features:
+        • Multi-LLM Support - Use OpenAI or any OpenAI-compatible endpoint
+        • Smart Code Context - AI understands your codebase for better assistance
+        • Intelligent Debugging - Get AI-powered insights for bug fixing
+        • Quick Documentation - Generate comprehensive code documentation
+        • Code Review Assistant - Receive intelligent code improvement suggestions
+
+        Keyboard Shortcuts:
+        • Ctrl+Shift+C - Chat about selected code
+        • Ctrl+Alt+/ - Add AI-generated documentation
+
+        Perfect for both beginners seeking guidance and experienced developers looking to boost productivity. LogicBoost
+        AI Assistant adapts to your coding style while maintaining security and privacy.
+    </description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
+    <depends>com.intellij.modules.lang</depends>
+    <depends>org.jetbrains.kotlin</depends>
+    <actions>
+        <action id="LogicBoost.EditorChat"
+                class="org.logicboost.chat.actions.EditorChatIntegration"
+                text="Chat About Selection"
+                description="Send selected code to LogicBoost AI chat">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="control shift C"/>
+        </action>
+
+        <action id="LogicBoost.AddComment"
+                class="org.logicboost.chat.actions.CommentAction"
+                text="Add Comment"
+                description="Add AI-generated comment to selected code">
+            <add-to-group group-id="EditorPopupMenu"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt SLASH"/>
+        </action>
+    </actions>
+    <extensions defaultExtensionNs="com.intellij">
+
+        <toolWindow id="LogicBoost AI"
+                    secondary="true"
+                    icon="/icons/chat.svg"
+                    anchor="right"
+                    factoryClass="org.logicboost.chat.ChatToolWindowFactory"/>
+
+        <applicationService serviceImplementation="org.logicboost.chat.settings.ChatSettings"/>
+        <applicationConfigurable instance="org.logicboost.chat.settings.ChatSettingsConfigurable"
+                                 displayName="Logic-Boost"/>
+        <notificationGroup id="LogicBoost.AI.Notifications"
+                           displayType="BALLOON"
+        />
+        <notificationGroup id="LogicBoost.AI.Debug"
+                           displayType="BALLOON"/>
+    </extensions>
+    <resource-bundle>messages.Bundle</resource-bundle>
+</idea-plugin>
