@@ -68,31 +68,34 @@ class ChangesAction(
     /**
      * Main entry point to perform the code comparison and modification action.
      */
-    fun performApplyAction() {
+    fun performApplyAction(onComplete: (Boolean) -> Unit = {}) {
         logger.info("Starting apply action")
 
-        val targetEditor = this.targetEditor ?: return
+        val targetEditor = this.targetEditor ?: run {
+            onComplete(false)
+            return
+        }
+
         val suggestedCode = sourceCode
         val targetCode = targetEditor.document.text
 
-        // Validate user inputs, if needed
-        if (!validateInputs(targetCode)) return
+        if (!validateInputs(targetCode)) {
+            onComplete(false)
+            return
+        }
 
-        // Launch the process in a background coroutine
         scope.launch {
-            var progressBalloon: Balloon? = null
+            val progressBalloon: Balloon? = null
             try {
-                // Show a "processing" indicator in the UI thread
                 ApplicationManager.getApplication().invokeLater {
-                    progressBalloon = showWaitIndicator(targetEditor, "Processing changes...")
+                    progressBalloon?.hide()
                 }
-
-                // Run the main logic
                 processChanges(suggestedCode, targetCode, targetEditor)
+                onComplete(true)
             } catch (e: Exception) {
                 handleError("Error performing apply action", e)
+                onComplete(false)
             } finally {
-                // Hide the indicator once done or on error
                 ApplicationManager.getApplication().invokeLater {
                     progressBalloon?.hide()
                 }

@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.project.Project
 import com.intellij.ui.BrowserHyperlinkListener
 import com.intellij.ui.components.JBScrollPane
+import com.intellij.ui.AnimatedIcon
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
 import kotlinx.coroutines.*
@@ -169,7 +170,26 @@ class MarkdownPanel(private val project: Project) : JPanel(BorderLayout()) {
                 background = null
                 add(createActionButton("Copy") { copyToClipboard(code) })
                 if (showApplyButton) {
-                    add(createActionButton("Apply") { applyCode(code) })
+                    val loadingIcon = AnimatedIcon.Default()
+                    val applyButton = JButton("Apply").apply {
+                        addActionListener {
+                            isEnabled = false // Disable button
+                            text = "" // Clear text while loading
+                            icon = loadingIcon // Set the animated icon
+                            applyCode(code, this) {
+                                // Reset button state after action completes
+                                SwingUtilities.invokeLater {
+                                    isEnabled = true
+                                    text = "Apply"
+                                    icon = null
+                                }
+                            }
+                        }
+                        isFocusable = false
+                        border = BorderFactory.createEmptyBorder(4, 8, 4, 8)
+                        foreground = UIUtil.getLabelForeground()
+                    }
+                    add(applyButton)
                 }
             }
 
@@ -330,8 +350,10 @@ class MarkdownPanel(private val project: Project) : JPanel(BorderLayout()) {
         logger.info("Copied code to clipboard")
     }
 
-    private fun applyCode(code: String) {
-        ChangesAction(project, code).performApplyAction()
+    private fun applyCode(code: String, button: JButton, onComplete: () -> Unit) {
+        ChangesAction(project, code).performApplyAction { success ->
+            onComplete()
+        }
         logger.info("Applied code changes")
     }
 
