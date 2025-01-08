@@ -83,9 +83,7 @@ object CodeHighlighter {
     )
 
     fun highlightCode(code: String, language: String): String {
-        // Get the current color scheme each time we highlight
         val colorScheme = EditorColorsManager.getInstance().globalScheme
-
         val normalizedLang = language.lowercase()
         val jetbrainsLang = languageMap[normalizedLang] ?: "Plain Text"
 
@@ -107,41 +105,35 @@ object CodeHighlighter {
                 .mapNotNull { colorScheme.getAttributes(it) }
                 .firstOrNull()
 
-            if (attributes != null) {
-                val styles = mutableListOf<String>()
+            // Preserve line breaks by replacing them with <br/> tags
+            val processedText = tokenText.split("\n").joinToString("\n") { line ->
+                if (attributes != null) {
+                    val styles = mutableListOf<String>()
 
-                // Add foreground color if present
-                attributes.foregroundColor?.let {
-                    styles.add("color: ${colorToHex(it)}")
-                }
+                    attributes.foregroundColor?.let {
+                        styles.add("color: ${colorToHex(it)}")
+                    }
+                    attributes.backgroundColor?.let {
+                        styles.add("background-color: ${colorToHex(it)}")
+                    }
+                    if (attributes.fontType and 1 != 0) {
+                        styles.add("font-weight: bold")
+                    }
+                    if (attributes.fontType and 2 != 0) {
+                        styles.add("font-style: italic")
+                    }
 
-                // Add background color if present
-                attributes.backgroundColor?.let {
-                    styles.add("background-color: ${colorToHex(it)}")
-                }
-
-                // Add font weight if bold
-                if (attributes.fontType and 1 != 0) {
-                    styles.add("font-weight: bold")
-                }
-
-                // Add font style if italic
-                if (attributes.fontType and 2 != 0) {
-                    styles.add("font-style: italic")
-                }
-
-                // Create span with all applicable styles
-                if (styles.isNotEmpty()) {
-                    result.append("<span style=\"${styles.joinToString("; ")}\">")
-                        .append(escapeHtml(tokenText))
-                        .append("</span>")
+                    if (styles.isNotEmpty()) {
+                        "<span style=\"${styles.joinToString("; ")}\">${escapeHtml(line)}</span>"
+                    } else {
+                        escapeHtml(line)
+                    }
                 } else {
-                    result.append(escapeHtml(tokenText))
+                    escapeHtml(line)
                 }
-            } else {
-                result.append(escapeHtml(tokenText))
             }
 
+            result.append(processedText)
             lexer.advance()
         }
 
