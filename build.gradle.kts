@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "org.logicboost"
-version = "0.1.2"
+version = "0.1.2.1"
 
 repositories {
     mavenCentral()
@@ -26,7 +26,7 @@ dependencies {
     // Markdown processing
     implementation("org.jetbrains:markdown:0.7.3")
 
-    implementation("com.openai:openai-java:0.9.0")
+    implementation("com.openai:openai-java:0.9.1")
 
     // IntelliJ's SLF4J implementation
     compileOnly("org.slf4j:slf4j-api:1.7.36")
@@ -90,9 +90,13 @@ intellij {
     type.set("IC")
     plugins.set(
         listOf(
-            "com.intellij.java"
+        "com.intellij.java"
         )
     )
+    // Support for multiple IDE products
+    instrumentCode.set(true)
+    // Specify supported IDEs
+    updateSinceUntilBuild.set(true)
 }
 
 tasks {
@@ -103,7 +107,7 @@ tasks {
 
 
     patchPluginXml {
-        sinceBuild.set("231.*")
+        sinceBuild.set("233")
         untilBuild.set("243.*")
     }
 

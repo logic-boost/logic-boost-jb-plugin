@@ -3,32 +3,37 @@
     <id>org.logicboost.chat</id>
     <name>LogicBoost AI Assistant</name>
     <vendor>LogicBoost</vendor>
-    <description>Transform your coding experience with LogicBoost AI Assistant - your intelligent coding companion for
-        JetBrains IDEs.
+    <description># LogicBoost AI Assistant
+
+        Transform your coding experience with LogicBoost AI Assistant - your intelligent coding companion for JetBrains
+        IDEs.
 
         Harness the power of modern AI to enhance your development workflow with features like smart code analysis,
         intelligent debugging assistance, and context-aware suggestions. Supporting multiple LLM backends, LogicBoost
         seamlessly integrates with your existing development process.
 
-        Key Features:
-        • Multi-LLM Support - Use OpenAI or any OpenAI-compatible endpoint
-        • Smart Code Context - AI understands your codebase for better assistance
-        • Intelligent Debugging - Get AI-powered insights for bug fixing
-        • Quick Documentation - Generate comprehensive code documentation
-        • Code Review Assistant - Receive intelligent code improvement suggestions
+        ## Key Features
 
-        Keyboard Shortcuts:
-        • Ctrl+Shift+C - Chat about selected code
-        • Ctrl+Alt+/ - Add AI-generated documentation
+        * **Multi-LLM Support**: Use OpenAI or any OpenAI-compatible endpoint
+        * **Smart Code Context**: AI understands your codebase for better assistance
+        * **Intelligent Debugging**: Get AI-powered insights for bug fixing
+        * **Quick Documentation**: Generate comprehensive code documentation
+        * **Code Review Assistant**: Receive intelligent code improvement suggestions
+
+        ## Keyboard Shortcuts
+
+        * **Ctrl+Shift+C**: Chat about selected code
+        * **Ctrl+Alt+/**: Add AI-generated documentation
 
         Perfect for both beginners seeking guidance and experienced developers looking to boost productivity. LogicBoost
         AI Assistant adapts to your coding style while maintaining security and privacy.
+
+        Would you like me to also help reformat the rest of the plugin.xml file, or would you prefer to keep just the
+        description portion in markdown?
     </description>
 
     <depends>com.intellij.modules.platform</depends>
-    <depends>com.intellij.modules.java</depends>
     <depends>com.intellij.modules.lang</depends>
-    <depends>org.jetbrains.kotlin</depends>
     <actions>
         <action id="LogicBoost.EditorChat"
                 class="org.logicboost.chat.actions.EditorChatIntegration"
